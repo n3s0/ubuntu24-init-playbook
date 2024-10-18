@@ -1,0 +1,42 @@
+---
+- name: "Ubuntu Init Setup Playbook (Ubuntu Server 24.04 LTS)" 
+  hosts: servers
+  become_user: root
+  tasks:
+    - name: Set hostname
+      hostname:
+        name: "{{ host_name }}"
+        use: systemd
+      become: true
+      when: ansible_hostname !=  host_name
+    - name: Set timezone
+      command: timedatectl set-timezone America/Chicago
+    - name: Enable NTP synchronization
+      command: timedatectl set-ntp true
+    - name: Configure NTP servers
+      command: timedatectl ntp-servers enp1s0 us.pool.ntp.org
+    - name: Apt cache update
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+    - name: Installed packages upgrade
+      apt:
+        upgrade: dist
+      register: upgrade
+      retries: 15
+      delay: 5
+      until: upgrade is success
+    - name: Installed preferred base packages
+      apt:
+        pkg:
+          - nmap
+          - vim
+          - curl
+          - git
+          - cowsay
+          - figlet
+        state: latest
+    - name: Disable cloud-init
+      command: touch cloud-init.disabled
+    - name: Remove default motd
+      command: chmod -x /etc/update-motd.d/50-motd-news /etc/update-motd.d/91-contract-ua-esm-status
