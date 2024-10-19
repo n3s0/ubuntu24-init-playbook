@@ -1,7 +1,11 @@
 [all:vars]
-ansible_user = ""
+ansible_user = "ansible"
 ansible_become = yes
 ansible_become_method = sudo
 ansible_python_interpreter = '/usr/bin/env python3'
+ansible_ntp_pool = us.pool.ntp.org
+ansible_ntp_intf = ""
+ansible_timezone = "UTC"
 
 [servers]
+<IP Address> host_name=<hostname>
