@@ -93,7 +93,7 @@
     - name: Copy sshd config
       template:
         src: templates/99-n3s0-sshd.j2
-        dest: /etc/ssh/sshd_config.d/99-n3s0.conf
+        dest: /etc/ssh/sshd_config.d/99-ansible-custom.conf
     
     - name: Restart sshd service
       systemd_service:
